@@ -12,7 +12,7 @@ namespace BFS
         static void Main(string[] args)
         {
 
-            Console.WriteLine("for PatternFinder 1 , Graph 2 , ATMFinder 3");
+            Console.WriteLine("for PatternFinder 1 , Graph 2 , ATMFinder 3 , QuickSort 4");
             var input = Console.ReadLine();
             if (input == "1")
             {
@@ -43,8 +43,25 @@ namespace BFS
                     finder.AddNode(random.Next(1, 10000), random.Next(1, 10000));
                 }
                 var location = new ATMFinder.Node { x = random.Next(1, 10000), y = random.Next(1, 10000) };
-                var res = finder.FindNearest(location);
+                var res = finder.FindNearestBruteForce(location);
                 Console.WriteLine($"For Location({location.x} , {location.y}) amount ATM {res.x},{res.y} is the closest one amount {finder.GetNodeCount}");
+            }
+            if(input == "4")
+            {
+                var sort = new QuickSort<int>(9);
+                sort.Add(0, 7);
+                sort.Add(1, 2);
+                sort.Add(2, 3);
+                sort.Add(3, 6);
+                sort.Add(4, 5);
+                sort.Add(5, 9);
+                sort.Add(6, 8);
+                sort.Add(7, 9);
+                sort.Add(8, 7);
+                var sorted = sort.Sort();
+                Console.WriteLine();
+                sorted.ToList().ForEach(x => Console.Write(x + " "));
+
             }
             Console.Read();
         }
@@ -143,12 +160,8 @@ namespace BFS
         public void AddNode(int x, int y)
         {
             Nodes.Add(new Node { x = x, y = y });
-            
-
         }
         
-        
-
         public Node FindNearestBruteForce(Node Location)
         {
             
@@ -166,12 +179,91 @@ namespace BFS
             bool found = false;
             while(!found )
             {
-                if()
+                break;
             }
-            
+            return new Node { };
             
         }
     }
+
+    public class QuickSort<T> where T : IComparable
+    {
+        T[] list;
+        public QuickSort(int size)
+        {
+            list = new T[size];
+        }
+        public void Add(int index , T t)
+        {
+            list[index] = t;
+        }
+        public T[] Sort()
+        {
+            if (list.Length <= 1)
+                return list;
+            Sort(list, 0, list.Length - 1);
+            return list;
+        }
+
+        private void Sort(T[] list, int low, int high)
+        {
+            if(high-low <= 0) //fewer than 2 items 
+            { 
+                return;
+            }
+            int splitPoint = split(list, low, high);
+            Sort(list, low, splitPoint - 1);
+            Sort(list, splitPoint + 1, high);
+
+        }
+
+        private int split(T[] list, int low, int high)
+        {
+            int left = low + 1;
+            int right = high;
+            T pivot = list[low];
+
+            while (true)
+            {
+                while (left <= right)
+                {
+                    if (list[left].CompareTo(pivot) < 0)
+                    {
+                        left++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                while (right >= left)
+                {
+                    if (list[right].CompareTo(pivot) < 0)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        right--;
+                    }
+                }
+                if (left >= right)
+                {
+                    break;
+                }
+                T temp = list[left];
+                list[left] = list[right];
+                list[right] = temp;
+                left++;
+                right--;
+            }
+
+            list[low] = list[left - 1];
+            list[left - 1] = pivot;
+            return left - 1;
+        }
+    }
+
 
     public class Graph
     {
