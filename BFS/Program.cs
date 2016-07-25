@@ -12,7 +12,7 @@ namespace BFS
         static void Main(string[] args)
         {
 
-            Console.WriteLine("for PatternFinder 1 , Graph 2 , ATMFinder 3 , QuickSort 4");
+            Console.WriteLine("for PatternFinder 1 , Graph 2 , ATMFinder 3 , QuickSort 4 , PrintArray 5 , PrintNoOverlapping 6");
             var input = Console.ReadLine();
             if (input == "1")
             {
@@ -46,7 +46,7 @@ namespace BFS
                 var res = finder.FindNearestBruteForce(location);
                 Console.WriteLine($"For Location({location.x} , {location.y}) amount ATM {res.x},{res.y} is the closest one amount {finder.GetNodeCount}");
             }
-            if(input == "4")
+            if (input == "4")
             {
                 var sort = new QuickSort<int>(9);
                 sort.Add(0, 7);
@@ -63,6 +63,10 @@ namespace BFS
                 sorted.ToList().ForEach(x => Console.Write(x + " "));
 
             }
+            if (input == "5")
+                TwoDimentionalArryReader.RunTest(5);
+            if (input == "6")
+                PrintNonOverLapping.RunTest(4);
             Console.Read();
         }
 
@@ -136,6 +140,7 @@ namespace BFS
                 }
             }
         }
+
     }
 
     public class ATMFinder
@@ -143,14 +148,14 @@ namespace BFS
         bool _init = false;
         private void init()
         {
-            if(!_init)
+            if (!_init)
             {
                 xSorted = Nodes.OrderBy(x => x.x).ToArray();
                 ySorted = Nodes.OrderBy(x => x.y).ToArray();
                 _init = true;
             }
         }
-        public class Node { public int x; public int y;}
+        public class Node { public int x; public int y; }
         public class Result { public Node node; public double distance; }
         List<Node> Nodes = new List<Node>();
         Node[] xSorted;
@@ -161,10 +166,10 @@ namespace BFS
         {
             Nodes.Add(new Node { x = x, y = y });
         }
-        
+
         public Node FindNearestBruteForce(Node Location)
         {
-            
+
             var min = double.MaxValue;
             Node res = null;
             var distance = Nodes.Select(ATM => new Result { node = ATM, distance = Math.Sqrt(Math.Abs(Location.x - ATM.x) ^ 2 + Math.Abs(Location.y - ATM.y) ^ 2) });
@@ -172,18 +177,134 @@ namespace BFS
             return res;
 
         }
-        public Node FindNearest(Node location , int radius)
+        public Node FindNearest(Node location, int radius)
         {
             var count = GetNodeCount;
             var pivot = count / 2;
             bool found = false;
-            while(!found )
+            while (!found)
             {
                 break;
             }
             return new Node { };
-            
+
         }
+    }
+
+    public class PrintNonOverLapping
+    {
+        public PrintNonOverLapping(int n)
+        {
+            this.N = n;
+            this.A = new int[n];
+            for (int i = 0; i < n; i++)
+            {
+                A[i] = i + 1;
+            }
+
+        }
+        public void Print()
+        {
+            Print(0 , N);
+
+        }
+
+        private void Print(int start , int n)
+        {
+            for (int i = start; i < start + n; i++)
+            {
+                var s = i + 1;
+                PrintPartition(0, start);
+                PrintPartition(start, s);
+                PrintPartition(s , N - s);
+                Console.WriteLine();
+            }
+            Print(start + 1, N - start - 1);
+        }
+
+        public static void RunTest(int n)
+        {
+            var obj = new PrintNonOverLapping(n);
+            obj.Print();
+        }
+
+        public void PrintPartition(int start, int count)
+        {
+            if (count == 0) return;
+            Console.Write("(");
+            for (int i = start; i < start + count; i++)
+            {
+                Console.Write(A[i] + " ");
+            }
+            Console.Write(")");
+        }
+
+
+
+        public int[] A { get; private set; }
+        public int N { get; private set; }
+    }
+
+    public class TwoDimentionalArryReader
+    {
+        public TwoDimentionalArryReader(int n)
+        {
+            this.N = n;
+            this.A = new int[n, n];
+        }
+        public void Add(int i, int j, int val)
+        {
+            A[i, j] = val;
+        }
+
+        public int[] getArray()
+        {
+            var arr = new int[N * N];
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    if (i % 2 == 0)
+                        arr[j + i * N] = A[i, j];
+                    else
+                        arr[(i + 1) * N - j - 1] = A[i, j];
+                }
+            }
+            return arr;
+        }
+        public void printArray()
+        {
+
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    Console.Write(A[i, j] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+        public static void RunTest(int n)
+        {
+            var obj = new TwoDimentionalArryReader(n);
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    obj.Add(i, j, i * n + j + 1);
+                }
+            }
+            obj.printArray();
+
+            var arr = obj.getArray();
+            Console.WriteLine();
+            arr.ToList().ForEach(x => Console.Write(x + " "));
+
+
+        }
+
+        public int[,] A { get; private set; }
+        public int N { get; private set; }
     }
 
     public class QuickSort<T> where T : IComparable
@@ -193,7 +314,7 @@ namespace BFS
         {
             list = new T[size];
         }
-        public void Add(int index , T t)
+        public void Add(int index, T t)
         {
             list[index] = t;
         }
@@ -207,8 +328,8 @@ namespace BFS
 
         private void Sort(T[] list, int low, int high)
         {
-            if(high-low <= 0) //fewer than 2 items 
-            { 
+            if (high - low <= 0) //fewer than 2 items 
+            {
                 return;
             }
             int splitPoint = split(list, low, high);
