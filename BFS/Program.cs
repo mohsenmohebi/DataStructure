@@ -12,7 +12,7 @@ namespace BFS
         static void Main(string[] args)
         {
 
-            Console.WriteLine("for PatternFinder 1 , Graph 2 , ATMFinder 3 , QuickSort 4 , PrintArray 5 , PrintNoOverlapping 6");
+            Console.WriteLine("for PatternFinder 1 , Graph 2 , ATMFinder 3 , QuickSort 4 , PrintArray 5 , PrintNoOverlapping 6, transpose matrix 7");
             var input = Console.ReadLine();
             if (input == "1")
             {
@@ -67,6 +67,8 @@ namespace BFS
                 TwoDimentionalArryReader.RunTest(5);
             if (input == "6")
                 PrintNonOverLapping.RunTest(4);
+            if (input == "7")
+                TransposeMatrix.RunTest();
             Console.Read();
         }
 
@@ -191,6 +193,53 @@ namespace BFS
         }
     }
 
+    public class TransposeMatrix
+    {
+        public static void RunTest()
+        {
+            var matrix = new int[4, 4];
+            var obj = new TransposeMatrix();
+            obj.printAsign(matrix , true);
+            obj.transpose(matrix);
+            obj.printAsign(matrix, false);
+
+        }
+        private void transpose(int[,] matrix)
+        {
+            int n = (int) Math.Sqrt(matrix.Length) - 1;
+            for (int counter = 0; counter < n; counter++)
+            {
+                int tmp1, tmp2;
+                tmp1 = matrix[counter, n];
+                matrix[counter, n] = matrix[0, counter];
+                tmp2 = matrix[n, n - counter];
+                matrix[n, n - counter] = tmp1;
+                tmp1 = matrix[n-counter, 0];
+                matrix[n-counter, 0] = tmp2;
+                matrix[0, counter] = tmp1;
+                printAsign(matrix, false);
+            }
+        }
+        private void printAsign(int[,] matrix, bool asign)
+        {
+            var n = Math.Sqrt(matrix.Length);
+            var counter = 0;
+            Console.WriteLine("[");
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (asign)
+                        matrix[i, j] = ++counter;
+                    Console.Write(matrix[i, j] +   (matrix.Length.ToString().Length > 1 && matrix[i, j].ToString().Length == 1 ?   "  " : " "));
+
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("]");
+        }
+    }
+
     public class PrintNonOverLapping
     {
         public PrintNonOverLapping(int n)
@@ -205,18 +254,18 @@ namespace BFS
         }
         public void Print()
         {
-            Print(0 , N);
+            Print(0, N);
 
         }
 
-        private void Print(int start , int n)
+        private void Print(int start, int n)
         {
             for (int i = start; i < start + n; i++)
             {
                 var s = i + 1;
                 PrintPartition(0, start);
                 PrintPartition(start, s);
-                PrintPartition(s , N - s);
+                PrintPartition(s, N - s);
                 Console.WriteLine();
             }
             Print(start + 1, N - start - 1);
